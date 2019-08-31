@@ -1,0 +1,96 @@
+.top {
+  background-color: #EEE;
+}
+.list {
+  margin-top: 50px;
+}
+.card-header {
+  font-weight: bold;
+  font-size: 18px;
+  font-style: italic;
+}
+.card-text {
+  margin-top: 20px;
+}
+.card.second {
+  margin-top: 40px;
+}
+.modal-dialog {
+  max-width: 800px !important;
+}
+.form-group label {
+  font-weight: bold;
+}
+#search {
+  position: absolute;
+  right: 0;
+}
+.inactive-sorter {
+  position: relative;
+}
+.inactive-sorter .fa {
+  position: absolute;
+  color: #dee2e6;
+}
+.inactive-sorter .fa-caret-up {
+  top: 0;
+}
+.inactive-sorter .fa-caret-down {
+  top: 8px;
+}
+#table-actions {
+  position: relative;
+  margin-bottom: 20px;
+}
+#pageSize {
+  padding: 5px 5px;
+}
+#paginator {
+  position: relative;
+}
+#paginator span {
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+}
+.w50 {
+  width: 50px;
+}
+.bootstrap-select {
+  border: 1px solid #ced4da !important;
+}
+.bootstrap-select .btn-light {
+  background-color: #FFF;
+}
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3050;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+  transition: opacity .15s linear;
+  background: #000;
+  opacity: 0.7;
+}
+.circle {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  border-radius: 40px;
+  box-sizing: border-box;
+  border: solid 10px rgba(255, 255, 255, 0.2);
+  border-top-color: #FFF;
+  animation: spin 1s infinite linear;
+  position: relative;
+  top: 45%;
+}
+
+@keyframes spin { 
+  100% { 
+    transform: rotate(360deg); 
+  } 
+} 
+

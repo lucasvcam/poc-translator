@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html ng-app="translator">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Translators</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/app.css">
+</head>
+
+<body>
+
+  <div ng-controller="TranslatorController">
+    <header class="navbar top">
+      <div class="container">
+        <h2>Translators</h2>
+      </div>
+    </header>
+
+    <div class="container list">
+
+      <div class="card">
+        <div class="card-header">Register</div>
+        <div class="card-body">
+          <p class="card-text">Here you can register translators
+            information.</p>
+          <button type="button" class="btn btn-info" ng-click="openModal({}, 'register');">
+            New Translator &nbsp; <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card second">
+        <div class="card-header">List of Translators</div>
+        <div class="card-body">
+          <p class="card-text">Here you can find and manage all translators.</p>
+          <form class="form-inline" id="table-actions" ng-show="translators.totalElements > 0">
+            <div class="form-group">
+              Show &nbsp;
+              <select id="pageSize" ng-model="pageSize" class="form-control" ng-change="fetchAllTranslators()">
+                <option ng-repeat="size in pageSizes" ng-value="{{size}}">{{size}}</option>
+              </select>
+              &nbsp; entries
+            </div>
+            <div class="form-group" id="search">
+              <input type="text" ng-model="search" class="form-control" placeholder="Search">
+            </div>
+          </form>
+          <table id="tableList" class="table table-striped">
+            <thead>
+              <tr>
+                <th ng-click="sort('name')">Names &nbsp; <span class="inactive-sorter" ng-show="sortKey!='name'"><i
+                      class="fa fa-caret-down"></i><i class="fa fa-caret-up"></i></span><i class="fa"
+                    ng-class="{'fa-caret-up':reverse,'fa-caret-down':!reverse}" ng-show="sortKey=='name'"></i>
+                </th>
+                <th ng-click="sort('email')">Email &nbsp; <span class="inactive-sorter" ng-show="sortKey!='email'"><i
+                      class="fa fa-caret-down"></i><i class="fa fa-caret-up"></i></span><i class="fa"
+                    ng-class="{'fa-caret-up':reverse,'fa-caret-down':!reverse}" ng-show="sortKey=='email'"></i>
+                </th>
+                <th ng-click="sort('sourceLanguage')">Source Language &nbsp; <span class="inactive-sorter"
+                    ng-show="sortKey!='sourceLanguage'"><i class="fa fa-caret-down"></i><i
+                      class="fa fa-caret-up"></i></span><i class="fa"
+                    ng-class="{'fa-caret-up':reverse,'fa-caret-down':!reverse}" ng-show="sortKey=='sourceLanguage'"></i>
+                </th>
+                <th ng-click="sort('targetLanguage')">Target Language &nbsp; <span class="inactive-sorter"
+                    ng-show="sortKey!='targetLanguage'"><i class="fa fa-caret-down"></i><i
+                      class="fa fa-caret-up"></i></span><i class="fa"
+                    ng-class="{'fa-caret-up':reverse,'fa-caret-down':!reverse}" ng-show="sortKey=='targetLanguage'"></i>
+                </th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="translator in translators.content | orderBy:sortKey:reverse | filter:search">
+                <td>{{translator.name}}</td>
+                <td>{{translator.email}}</td>
+                <td>{{translator.sourceLanguage}}</td>
+                <td>{{translator.targetLanguage}}</td>
+                <td><a href="JavaScript:void(0);" class="btn btn-info" ng-click="openModal(translator, 'edit');"
+                    title="EDIT"> <i class="fa fa-pencil-square-o"></i>
+                  </a> <a href="JavaScript:void(0);" class="btn btn-danger" ng-click="openModal(translator, 'delete');"
+                    title="REMOVE"> <i class="fa fa-trash-o"></i>
+                  </a></td>
+              </tr>
+              <tr ng-show="translators.totalElements == 0">
+                <td colspan="5" align="center">No data available</td>
+              </tr>
+            </tbody>
+          </table>
+          <div id="paginator" ng-show="translators.totalElements > 0">
+            <button ng-disabled="currentPage == 1" ng-click="paginator(1)">
+              <i class="fa fa-angle-double-left"></i>
+            </button>
+            <button ng-disabled="currentPage == 1" ng-click="paginator(currentPage-1)">
+              <i class="fa fa-angle-left"></i>
+            </button>
+            <input type="number" ng-model="currentPage" class="w50" ng-change="fetchAllTranslators()"> of
+            {{translators.totalPages}} pages
+            <button ng-disabled="currentPage >= translators.totalPages" ng-click="paginator(currentPage+1)">
+              <i class="fa fa-angle-right"></i>
+            </button>
+            <button ng-disabled="currentPage >= translators.totalPages" ng-click="paginator(translators.totalPages)">
+              <i class="fa fa-angle-double-right"></i>
+            </button>
+            <span> Total entries: <b>{{translators.totalElements}}</b> </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+      <div class="modal-dialog" role="document">
+        <form name="TranslatorRegister" id="translatorRegister" ng-submit="submit(currentTranslator)">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalLabel">{{modalTitle}}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span>&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" ng-if="modalAction!='delete'">
+              <div class="form-group">
+                <label for="name">Name</label> <input type="text" class="form-control" id="name"
+                  ng-model="currentTranslator.name" maxlength="30" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email address</label> <input type="email" class="form-control" id="email"
+                  ng-model="currentTranslator.email" maxlength="50" required>
+              </div>
+              <div class="form-group">
+                <label for="source">Source Language</label>
+                <select class="form-control" ng-model="currentTranslator.sourceLanguage" required>
+                  <option value=""></option>
+                  <option ng-repeat="language in languages" value="{{language.name}}">{{language.name}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="target">Target Language</label>
+                <select class="form-control" ng-model="currentTranslator.targetLanguage" required>
+                  <option value=""></option>
+                  <option ng-repeat="language in languages" value="{{language.name}}">{{language.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-body" ng-if="modalAction=='delete'">
+              <p> You confirm the deletion of the translator: <b>{{currentTranslator.name}}</b>? </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-success">Confirm</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="loading" ng-show="loading">
+      <div class="circle"></div>
+    </div>
+  </div>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script src="https://use.fontawesome.com/9a84b76b00.js"></script>
+  <script src="app.js"></script>
+  <script src="./js/service/translator_service.js"></script>
+  <script src="./js/service/language_service.js"></script>
+  <script src="./js/controller/translator_controller.js"></script>
+
+</body>
+
+</html>
