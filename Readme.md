@@ -14,7 +14,7 @@ The company needs to manage its translators, so it needs a system that performs 
 * Vue - https://vuejs.org/
 * AngularJS - https://angularjs.org/
 
-#Solution
+# Solution
 
 A translator management application has been developed where it is possible to manage translators (CRUD). Was used AngularJs on the front end and the technologies needed for the back end.
 
@@ -25,7 +25,7 @@ Was chose to pre-enter languages ??in the base, via Flyway, so they can be used 
 
 The database was created in Heroku.
 
-#Instructions
+# Instructions
 
 You must perform configuration of the Java environment.
 Must be using at least Java version 8.
